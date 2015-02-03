@@ -11,12 +11,14 @@ namespace po = boost::program_options;
 
 int main(int argc, const char* argv[]) {
 
-	string inputStem, queryfile;
+	//string inputStem, queryfile;
+	string queryfile;
+	string datafile;
 
 	po::options_description desc("Options");
 	desc.add_options()
 			("help", "produce help message")
-			("indexname", po::value<string>(&inputStem), "stem name of the index files")
+			("datafile", po::value<string>(&datafile), "name for datafile")
 			("queryfile", po::value<string>(&queryfile), "file containing the queries");
 
 	po::variables_map vm;
@@ -28,8 +30,20 @@ int main(int argc, const char* argv[]) {
 		return 1;
 	}
 
-	RtreeIndex *rtree = new RtreeIndex();
-	rtree->loadIndex(inputStem, BOX);
+	/********************** BUILDING **********************/
+	Timer building;
+	building.start();
+	RtreeIndex* myIndex = new RtreeIndex();
+	DataFileReader* input = new DataFileReader(datafile);
+
+	myIndex->buildIndex(input);
+
+	delete input;
+	building.stop();
+	cout << "Building Time: " << building << endl;
+	
+  myIndex->setObjectType(BOX);
+	//rtree->loadIndex(inputStem, BOX);
 
 	/********************** DO QUERIES **********************/
 	vector<SpatialQuery> queries;
@@ -37,17 +51,12 @@ int main(int argc, const char* argv[]) {
 
 	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) {
 
-//#ifndef WIN32
-//		system("sync");
-//		system("echo 1 > /proc/sys/vm/drop_caches");
-//		system("dd if=/dev/zero of=deleteME bs=1M count=128");
-//		system("sync");
-//		system("cat deleteME > /dev/null");
-//#endif
 		vector<SpatialObject *> * result = new vector<SpatialObject *>();
-		rtree->query(&(*query), result);
+		myIndex->query(&(*query), result);
     query->stats.printRTREEstats();
 
 		delete result;
 	}
+
+  delete myIndex;
 }

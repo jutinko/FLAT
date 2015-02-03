@@ -125,13 +125,15 @@ namespace FLAT
 	}
 
 	RtreeIndex::~RtreeIndex() {
+    delete tree;
 		delete rtreeStorageManager;
 	}
 
-	void RtreeIndex::buildIndex(SpatialObjectStream* input,string indexFileStem) {
+	void RtreeIndex::buildIndex(SpatialObjectStream* input) {
 		rtree_stream* ds = new rtree_stream(input);
 		SpatialIndex::id_type indexIdentifier=1;
-		rtreeStorageManager = SpatialIndex::StorageManager::createNewDiskStorageManager(indexFileStem, PAGE_SIZE);
+		//rtreeStorageManager = SpatialIndex::StorageManager::createNewDiskStorageManager(indexFileStem, PAGE_SIZE);
+    rtreeStorageManager = SpatialIndex::StorageManager::createNewMemoryStorageManager();
 
 		try {
 			uint32 header = 76;
@@ -149,7 +151,7 @@ namespace FLAT
 					indexIdentifier
 					);
 
-			delete tree;
+			//delete tree;
 		} catch (Tools::IllegalArgumentException e) {
 			cout << e.what() << endl;
 		}
@@ -179,5 +181,9 @@ namespace FLAT
 
 		tree->intersectsWithQuery(query_region, visitor);
 	}
+
+	void RtreeIndex::setObjectType(SpatialObjectType type) {
+    objectType = type;
+  }
 }
 

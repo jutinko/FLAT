@@ -44,11 +44,13 @@ namespace FLAT
 
 		~RtreeIndex();
 
-		void buildIndex(SpatialObjectStream* input, string indexFileStem);
+		void buildIndex(SpatialObjectStream* input);
 
 		void loadIndex(string indexFileStem, SpatialObjectType type);
 
 		void query(SpatialQuery *q, vector<SpatialObject *> *result);
+
+		void setObjectType(SpatialObjectType type);
 	};
 }
 #endif
