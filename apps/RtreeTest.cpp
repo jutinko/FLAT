@@ -52,7 +52,7 @@ int main(int argc, const char* argv[]) {
 	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) {
 
 		vector<SpatialObject *> * result = new vector<SpatialObject *>();
-		myIndex->query(&(*query), result);
+		myIndex->kNNQuery(&(*query), result);
     query->stats.printRTREEstats();
 
 		delete result;

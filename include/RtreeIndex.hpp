@@ -48,7 +48,11 @@ namespace FLAT
 
 		void loadIndex(string indexFileStem, SpatialObjectType type);
 
+    // Range queries
 		void query(SpatialQuery *q, vector<SpatialObject *> *result);
+
+    // kNn queries
+		void kNNQuery(SpatialQuery *q, vector<SpatialObject *> *result);
 
 		void setObjectType(SpatialObjectType type);
 	};

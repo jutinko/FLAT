@@ -177,9 +177,24 @@ namespace FLAT
 		}
 
 		SpatialIndex::Region query_region = SpatialIndex::Region(lo, hi, DIMENSION);
-		rtreeVisitorRTREE visitor(&(*q), result, objectType);
+		rtreeVisitorRTREE visitor(q, result, objectType);
 
 		tree->intersectsWithQuery(query_region, visitor);
+	}
+
+	void RtreeIndex::kNNQuery(SpatialQuery *q, vector<SpatialObject *> *result) {
+
+    double values[DIMENSION];
+
+		for (int i=0;i<DIMENSION;i++) {
+			values[i] = (double)q->Point.Vector[i];
+		}
+
+    cout << "in kNN" << endl;
+    SpatialIndex::Point p = SpatialIndex::Point(values, DIMENSION);
+		rtreeVisitorRTREE visitor(q, result, objectType);
+
+		tree->nearestNeighborQuery(q->k, p, visitor);
 	}
 
 	void RtreeIndex::setObjectType(SpatialObjectType type) {

@@ -48,13 +48,13 @@ namespace FLAT
 						if (readFile.eof()) break;
 						tokenize(line, tokens);
 						SpatialQuery temp;
-							temp.type = (SpatialQueryType)type;
-							temp.Region.low[0]   = atof(tokens.at(0).c_str());
-							temp.Region.low[1]   = atof(tokens.at(1).c_str());
-							temp.Region.low[2]   = atof(tokens.at(2).c_str());
-							temp.Region.high[0]  = atof(tokens.at(3).c_str());
-							temp.Region.high[1]  = atof(tokens.at(4).c_str());
-							temp.Region.high[2]  = atof(tokens.at(5).c_str());
+						temp.type = (SpatialQueryType)type;
+						temp.Region.low[0]   = atof(tokens.at(0).c_str());
+						temp.Region.low[1]   = atof(tokens.at(1).c_str());
+						temp.Region.low[2]   = atof(tokens.at(2).c_str());
+						temp.Region.high[0]  = atof(tokens.at(3).c_str());
+						temp.Region.high[1]  = atof(tokens.at(4).c_str());
+						temp.Region.high[2]  = atof(tokens.at(5).c_str());
 						queries.push_back(temp);
 					}
 					readFile.close();
@@ -100,6 +100,15 @@ namespace FLAT
 			}
 			else
 			{
+        int k;
+        bool isKNN = false;
+        if(type==KNN_QUERY)
+        {
+          isKNN = true;
+				  getline (readFile,line);
+				  k = atoi(line.c_str());
+        }
+
 				if (readFile.is_open())
 				{
 					while (!readFile.eof())
@@ -109,10 +118,14 @@ namespace FLAT
 						if (readFile.eof()) break;
 						tokenize(line, tokens);
 						SpatialQuery temp;
-							temp.type = (SpatialQueryType)type;
-							temp.Point[0]   = atof(tokens.at(0).c_str());
-							temp.Point[1]   = atof(tokens.at(1).c_str());
-							temp.Point[2]   = atof(tokens.at(2).c_str());
+            if(isKNN) 
+            {
+              temp.k = k;
+            }
+						temp.type = (SpatialQueryType)type;
+						temp.Point[0]   = atof(tokens.at(0).c_str());
+						temp.Point[1]   = atof(tokens.at(1).c_str());
+						temp.Point[2]   = atof(tokens.at(2).c_str());
 						queries.push_back(temp);
 					}
 					readFile.close();

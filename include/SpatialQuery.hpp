@@ -73,6 +73,7 @@ namespace FLAT
 		SpatialQueryType type;
 		Box Region;     // for seed and range query
 		Vertex Point;   // for point query or kNN
+    uint32_t k;     // k for kNN
 		vector<Box> Moving;
 
 		SpatialQuery();
