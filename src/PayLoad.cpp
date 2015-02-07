@@ -77,6 +77,7 @@ namespace FLAT
 
 	}
 
+  // This method only works when we are writing the items to file
 	bool PayLoad::putPage(vector<SpatialObject*>& itemArray)
 	{
 		try
@@ -110,6 +111,7 @@ namespace FLAT
 		return true;
 	}
 
+  // This method only works when we reading thigns from file
 	bool PayLoad::getPage(vector<SpatialObject*>& itemArray,int pageId)
 	{
 		try
