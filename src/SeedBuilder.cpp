@@ -38,10 +38,9 @@ namespace FLAT
 			delete[] m_pIdentifier;
 	}
 
-	void SeedBuilder::buildSeedTree(std::string indexFileStem, SpatialIndex::IDataStream* stream)
+  SpatialIndex::IStorageManager* SeedBuilder::buildSeedTreeInMemory(SpatialIndex::IDataStream* stream)
 	{
-		string seedFile = indexFileStem+"_index";
-		SpatialIndex::IStorageManager* rtreeStorageManager = SpatialIndex::StorageManager::createNewDiskStorageManager(seedFile, PAGE_SIZE);
+		SpatialIndex::IStorageManager* rtreeStorageManager = SpatialIndex::StorageManager::createNewMemoryStorageManager();
 
 		/*
 		 * Page size = 4096
@@ -120,7 +119,7 @@ namespace FLAT
 				}
 			delete nss;
 		}
-		delete rtreeStorageManager;
+		return rtreeStorageManager;
 	}
 
 	void SeedBuilder::writeNode(SpatialIndex::id_type page,
@@ -178,7 +177,7 @@ namespace FLAT
 		catch (SpatialIndex::InvalidPageException& e)
 		{
 			delete[] buffer;
-			std::cerr << e.what() << std::endl;
+			std::cerr << "writeNode: " << e.what() << std::endl;
 			throw;
 		}
 	}
@@ -198,7 +197,7 @@ namespace FLAT
 		}
 		catch (SpatialIndex::InvalidPageException& e)
 		{
-			std::cerr << e.what() << std::endl;
+			std::cerr << "readNode: " << e.what() << std::endl;
 			throw;
 		}
 

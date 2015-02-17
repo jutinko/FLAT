@@ -36,7 +36,9 @@ namespace FLAT
 	class SeedBuilder
 	{
 	public:
-		static void buildSeedTree(std::string seedFile, SpatialIndex::IDataStream* stream);
+		//static void buildSeedTree(std::string seedFile, SpatialIndex::IDataStream* stream);
+
+		static SpatialIndex::IStorageManager* buildSeedTreeInMemory(SpatialIndex::IDataStream* stream);
 
 		static void writeNode(SpatialIndex::id_type page,SpatialIndex::IStorageManager* m_pStorageManager,nodeSkeleton * n);
 

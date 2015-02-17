@@ -66,7 +66,8 @@ namespace FLAT
 #endif
 		MetaDataStream* metaDataStream = new MetaDataStream(metadataStructure,linkerTree);
 
-		SeedBuilder::buildSeedTree(indexFileStem,metaDataStream);
+    // THIS IS BROKEN!
+		SeedBuilder::buildSeedTreeInMemory(metaDataStream);
 
 #ifdef DEBUG
 		cout << "TOTAL PAGES: " << metaDataStream->pages <<endl;

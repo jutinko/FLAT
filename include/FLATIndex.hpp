@@ -36,14 +36,14 @@ namespace FLAT
 
 		~FLATIndex();
 
-		void buildIndex(uint64 fp,SpatialObjectStream* input,string indexFileStem);
+		void buildIndex(uint64 fp,SpatialObjectStream* input);
 
-		void loadIndex(string indexFileStem);
+		void loadIndex();
 
 		void query(SpatialQuery *qi, vector<SpatialObject *> *result);
 
 	private:
-		void initialize(SpatialObjectStream* input,string indexFileStem);
+		void initialize(SpatialObjectStream* input);
 
 		void doTessellation(SpatialObjectStream* input);
 

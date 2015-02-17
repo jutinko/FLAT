@@ -99,35 +99,22 @@ int main(int argc, char* argv[]) {
 
 		//cout << center_x << "\t" << center_y << "\t" << center_z << endl;
 
-		Box random;
+		//Box random;
+    Vertex random;
 
-		random.low.Vector[0] = center_x - uni_one() / 2;
-		random.low.Vector[1] = center_y - uni_one() / 2;
-		random.low.Vector[2] = center_z - uni_one() / 2;
+		random.Vector[0] = center_x + uni_one() / 2;
+		random.Vector[1] = center_y + uni_one() / 2;
+		random.Vector[2] = center_z + uni_one() / 2;
 
-		random.high.Vector[0] = center_x + uni_one() / 2;
-		random.high.Vector[1] = center_y + uni_one() / 2;
-		random.high.Vector[2] = center_z + uni_one() / 2;
+		if (universe.high.Vector[0] < random.Vector[0])
+			universe.high.Vector[0] = random.Vector[0];
 
-		if (universe.low.Vector[0] > random.low.Vector[0])
-			universe.low.Vector[0] = random.low.Vector[0];
+		if (universe.high.Vector[1] < random.Vector[1])
+			universe.high.Vector[1] = random.Vector[1];
 
-		if (universe.low.Vector[1] > random.low.Vector[1])
-			universe.low.Vector[1] = random.low.Vector[1];
-
-		if (universe.low.Vector[2] > random.low.Vector[2])
-			universe.low.Vector[2] = random.low.Vector[2];
-
-		if (universe.high.Vector[0] < random.high.Vector[0])
-			universe.high.Vector[0] = random.high.Vector[0];
-
-		if (universe.high.Vector[1] < random.high.Vector[1])
-			universe.high.Vector[1] = random.high.Vector[1];
-
-		if (universe.high.Vector[2] < random.high.Vector[2])
-			universe.high.Vector[2] = random.high.Vector[2];
-		std::cout << random.low[0] << ", " << random.low[1] << ", " << random.low[2] << std::endl;
-		std::cout << random.high[0] << ", " << random.high[1] << ", " << random.high[2] << std::endl;
+		if (universe.high.Vector[2] < random.Vector[2])
+			universe.high.Vector[2] = random.Vector[2];
+		std::cout << random[0] << ", " << random[1] << ", " << random[2] << std::endl;
 		std::cout << std::endl;
 
 		file->write(&random);
@@ -136,9 +123,9 @@ int main(int argc, char* argv[]) {
 	///////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////
 
-	file->writeUInt32(BOX);
+	file->writeUInt32(VERTEX);
 	file->writeUInt64(elements);
-	file->writeUInt32(SpatialObjectFactory::getSize(BOX));
+	file->writeUInt32(SpatialObjectFactory::getSize(VERTEX));
 	file->write(&universe);
 
 	delete file;

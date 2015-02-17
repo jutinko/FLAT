@@ -51,6 +51,11 @@ namespace FLAT
 		}
 
 	}
+  
+  void PayLoad::createInMemory(SpatialObjectType objectType)
+  {
+    this->objType = objectType;
+  }
 
 	void PayLoad::load(string indexFileStem)
 	{
@@ -111,6 +116,23 @@ namespace FLAT
 		return true;
 	}
 
+  bool PayLoad::putPageInMemory(uint64 id, vector<SpatialObject*>& itemArray)
+  {
+    if(table.find(id) != table.end()) 
+    {
+      return false;
+    } else 
+    {
+      vector<SpatialObject*> items = itemArray;
+      //for(vector<SpatialObject*>::iterator it = itemArray.begin(); it != itemArray.end(); ++it) 
+      //{
+
+      //}
+      table.insert(make_pair(id, items));
+      return true;
+    }
+  }
+
   // This method only works when we reading thigns from file
 	bool PayLoad::getPage(vector<SpatialObject*>& itemArray,int pageId)
 	{
@@ -148,4 +170,19 @@ namespace FLAT
 		return true;
 	}
 
+  bool PayLoad::getPageInMemory(vector<SpatialObject*>& itemArray, uint64 pageId)
+  {
+    if(table.find(pageId) == table.end())
+    {
+      return false;
+    } else
+    {
+      vector<SpatialObject*> objects = (*table.find(pageId)).second;
+      for(vector<SpatialObject*>::iterator i = objects.begin(); i != objects.end(); ++i)
+      {
+        itemArray.push_back(*i);
+      }
+      return true;
+    }
+  }
 }

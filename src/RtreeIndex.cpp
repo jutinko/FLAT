@@ -188,9 +188,9 @@ namespace FLAT
 
 		for (int i=0;i<DIMENSION;i++) {
 			values[i] = (double)q->Point.Vector[i];
+      cout << "in kNN value at: " << i << "is: " << values[i] << endl;
 		}
 
-    cout << "in kNN" << endl;
     SpatialIndex::Point p = SpatialIndex::Point(values, DIMENSION);
 		rtreeVisitorRTREE visitor(q, result, objectType);
 

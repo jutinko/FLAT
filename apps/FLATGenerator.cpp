@@ -12,15 +12,15 @@ int main(int argc, const char* argv[])
 {
 ///////////////////////// TEST STR INDEX AND TESSELLATION ////////////////////////////
 
-	string outputStem, datafile;
+	string datafile, queryfile;
 	uint32 footprint;
 
 	po::options_description desc("Options");
 	desc.add_options()
 			("help", "produce help message")
-			("indexname", po::value<string>(&outputStem), "stem name of the index files")
 			("datafile", po::value<string>(&datafile), "file containing the data to be indexed")
 			("footprint", po::value<uint32>(&footprint), "maximum memory footprint of indexing process")
+			("queryfile", po::value<string>(&queryfile), "file containing the queries");
 	;
 
 	po::variables_map vm;
@@ -36,12 +36,24 @@ int main(int argc, const char* argv[])
 
 	building.start();
 	DataFileReader* input = new DataFileReader(datafile);
+	cout << "heyo: " << endl;
 
 	FLATIndex* myIndex = new FLATIndex();
-	myIndex->buildIndex(footprint, input, outputStem);
+	myIndex->buildIndex(footprint, input);
+  myIndex->loadIndex();
 
-	delete myIndex;
-	delete input;
 	building.stop();
+	delete input;
 	cout << "Building Time: " << building << endl;
+
+	/********************** DO QUERIES **********************/
+	vector<SpatialQuery> queries;
+	SpatialQuery::ReadQueries(queries, queryfile);
+
+	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end();query++) {
+		vector<SpatialObject *> * result = new vector<SpatialObject *>();
+		myIndex->query(&(*query), result);
+		
+		delete result;
+	}
 }
