@@ -42,7 +42,7 @@ int main(int argc, const char* argv[]) {
 	building.stop();
 	cout << "Building Time: " << building << endl;
 	
-  myIndex->setObjectType(BOX);
+  myIndex->setObjectType(VERTEX);
 	//rtree->loadIndex(inputStem, BOX);
 
 	/********************** DO QUERIES **********************/
@@ -53,6 +53,7 @@ int main(int argc, const char* argv[]) {
 
 		vector<SpatialObject *> * result = new vector<SpatialObject *>();
 		myIndex->kNNQuery(&(*query), result);
+		//myIndex->query(&(*query), result);
     query->stats.printRTREEstats();
 
 		delete result;
