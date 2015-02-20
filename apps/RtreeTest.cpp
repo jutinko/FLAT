@@ -53,7 +53,6 @@ int main(int argc, const char* argv[]) {
 
 		vector<SpatialObject *> * result = new vector<SpatialObject *>();
 		myIndex->kNNQuery(&(*query), result);
-		//myIndex->query(&(*query), result);
     query->stats.printRTREEstats();
 
 		delete result;

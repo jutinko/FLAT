@@ -56,4 +56,5 @@ int main(int argc, const char* argv[])
 		
 		delete result;
 	}
+  delete myIndex;
 }

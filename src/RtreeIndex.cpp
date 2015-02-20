@@ -151,7 +151,6 @@ namespace FLAT
 					indexIdentifier
 					);
 
-			//delete tree;
 		} catch (Tools::IllegalArgumentException e) {
 			cout << e.what() << endl;
 		}
