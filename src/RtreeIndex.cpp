@@ -29,6 +29,7 @@ namespace FLAT
 			} else {
 				query->stats.RTREE_nodeIOs++;
 			}
+      delete shape;
 		}
 
 		virtual bool doneVisiting() {
@@ -48,6 +49,7 @@ namespace FLAT
 			data->unserialize((int8*)b);
 
 			result->push_back(data);
+      delete b;
 		}
 
 		virtual void visitUseless() {
@@ -187,7 +189,6 @@ namespace FLAT
 
 		for (int i=0;i<DIMENSION;i++) {
 			values[i] = (double)q->Point.Vector[i];
-      cout << "in kNN value at: " << i << "is: " << values[i] << endl;
 		}
 
     SpatialIndex::Point p = SpatialIndex::Point(values, DIMENSION);

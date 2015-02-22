@@ -14,15 +14,18 @@ using namespace FLAT;
 
 int main(int argc, char* argv[]) {
 	string distribution;
-	string output;
+	string dataFile, queryFile;
+  double ratio;
 
 	// Declare the supported options.
 	po::options_description desc("Options");
-	desc.add_options()("help", "produce help message")("output", po::value<
-			string>(&output), "output file name")("distribution", po::value<
+	desc.add_options()("help", "produce help message")("dataFile", po::value<
+			string>(&dataFile), "dataFile file name")("queryFile", po::value<
+			string>(&dataFile), "queryFile file name")("distribution", po::value<
 			string>(&distribution)->default_value("uniform"),
 			"distribution, i.e., uniform or normal")("elements",
-			po::value<long>(), "number of elements");
+			po::value<long>(), "number of elements")
+      ("queryRatio", po::value<double>(&ratio), "the ratio between data and queries");
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -54,21 +57,37 @@ int main(int argc, char* argv[]) {
 
 	cout << distribution << " " << elements << endl;
 
-	stringstream filename;
+	stringstream dataFilename, queryFilename;
 
-	if (output.empty()) {
+	if (dataFile.empty()) {
 		if (distribution.compare("normal") == 0) {
-			filename << "RandomData-Normal-500-250-" << (elements / 1000)
+			dataFilename << "RandomData-Normal-500-250-" << (elements / 1000)
 					<< "K.bin";
 		} else {
-			filename << "RandomData-Uniform-" << (elements / 1000) << "K.bin";
+			dataFilename << "RandomData-Uniform-" << (elements / 1000) << "K.bin";
 		}
 	} else {
-		filename << output;
+		dataFilename << dataFile;
 	}
 
-	BufferedFile* file = new BufferedFile();
-	file->create(filename.str());
+	if (queryFile.empty()) {
+		if (distribution.compare("normal") == 0) {
+			queryFilename << "RandomQuery-Normal-500-250-" << (elements / 1000)
+					<< "K.bin";
+		} else {
+			queryFilename << "RandomQuery-Uniform-" << (elements / 1000) << "K.txt";
+		}
+	} else {
+		queryFilename << queryFile;
+	}
+
+	BufferedFile* dFile = new BufferedFile();
+	dFile->create(dataFilename.str());
+
+	ofstream qFile;
+	qFile.open(queryFilename.str());
+  qFile << "3\n";
+  qFile << "3\n";
 
 	//we assume a universe of 0,0,0 and 1000,1000,1000 as well as a resolution of 100 cells in each dimension
 
@@ -79,6 +98,7 @@ int main(int argc, char* argv[]) {
 	double center_z = 0;
 
 	int e = 0;
+  int querySize = elements*ratio;
 
 	while (e < elements) {
 
@@ -114,19 +134,24 @@ int main(int argc, char* argv[]) {
 
 		if (universe.high.Vector[2] < random.Vector[2])
 			universe.high.Vector[2] = random.Vector[2];
-		std::cout << random[0] << ", " << random[1] << ", " << random[2] << std::endl;
-		std::cout << std::endl;
 
-		file->write(&random);
+    if(querySize)
+    {
+      qFile << random[0] << " " << random[1] << " " << random[2] << endl;
+      --querySize;
+    }
+
+		dFile->write(&random);
 	}
+  qFile.close();
 
 	///////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////
 
-	file->writeUInt32(VERTEX);
-	file->writeUInt64(elements);
-	file->writeUInt32(SpatialObjectFactory::getSize(VERTEX));
-	file->write(&universe);
+	dFile->writeUInt32(VERTEX);
+	dFile->writeUInt64(elements);
+	dFile->writeUInt32(SpatialObjectFactory::getSize(VERTEX));
+	dFile->write(&universe);
 
-	delete file;
+	delete dFile;
 }

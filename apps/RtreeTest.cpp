@@ -18,7 +18,7 @@ int main(int argc, const char* argv[]) {
 	po::options_description desc("Options");
 	desc.add_options()
 			("help", "produce help message")
-			("datafile", po::value<string>(&datafile), "name for datafile")
+			("datafile", po::value<string>(&datafile), "name fordatafile")
 			("queryfile", po::value<string>(&queryfile), "file containing the queries");
 
 	po::variables_map vm;
@@ -49,13 +49,15 @@ int main(int argc, const char* argv[]) {
 	vector<SpatialQuery> queries;
 	SpatialQuery::ReadQueries(queries, queryfile);
 
-	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) {
+	for(vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) {
+		vector<SpatialObject *> result;
+		myIndex->kNNQuery(&(*query), &result);
+    //query->stats.printRTREEstats();
 
-		vector<SpatialObject *> * result = new vector<SpatialObject *>();
-		myIndex->kNNQuery(&(*query), result);
-    query->stats.printRTREEstats();
-
-		delete result;
+    for(vector<SpatialObject*>::iterator i = result.begin(); i != result.end(); ++i)
+    {
+      delete *i;
+    }
 	}
 
   delete myIndex;
