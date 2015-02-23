@@ -52,12 +52,20 @@ int main(int argc, const char* argv[]) {
 	for(vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) {
 		vector<SpatialObject *> result;
 		myIndex->kNNQuery(&(*query), &result);
-    //query->stats.printRTREEstats();
+    cout << "Results: " << result.size() << endl;
 
+    vector<FLAT::spaceUnit> results;
     for(vector<SpatialObject*>::iterator i = result.begin(); i != result.end(); ++i)
     {
+      Vertex v = (*i)->getCenter();
+      results.push_back(v[0]);
       delete *i;
     }
+    for(size_t i = 0; i < results.size(); ++i)
+    {
+      cout << results[i] << ", ";
+    }
+    cout << endl;
 	}
 
   delete myIndex;

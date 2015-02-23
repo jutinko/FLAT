@@ -5,12 +5,15 @@ namespace FLAT
 {
   PayLoad::PayLoad()
   {
-
+    file = NULL;
   }
 
   PayLoad::~PayLoad()
   {
-    delete file;
+    if(file != NULL)
+    {
+      delete file;
+    }
     unordered_map<uint64, vector<SpatialObject*> >::iterator it;
     for(it = table.begin(); it != table.end(); ++it)
     {
@@ -132,7 +135,14 @@ namespace FLAT
       return false;
     } else 
     {
-      vector<SpatialObject*> items = itemArray;
+      vector<SpatialObject*> items;
+      for(size_t i = 0; i < itemArray.size(); ++i)
+      {
+        FLAT::Box* b = new FLAT::Box();
+        b = dynamic_cast<FLAT::Box *>(itemArray[i]);
+        items.push_back(b);
+      }
+
       table.insert(make_pair(id, items));
       return true;
     }

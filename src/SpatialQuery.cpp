@@ -107,7 +107,6 @@ namespace FLAT
           isKNN = true;
 				  getline (readFile,line);
 				  k = atoi(line.c_str());
-          cout << "k is: " << k << endl;
         }
 
 				if (readFile.is_open())

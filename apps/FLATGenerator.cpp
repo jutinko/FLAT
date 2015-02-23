@@ -51,10 +51,8 @@ int main(int argc, const char* argv[])
 	SpatialQuery::ReadQueries(queries, queryfile);
 
 	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end();query++) {
-		vector<SpatialObject *> * result = new vector<SpatialObject *>();
-		myIndex->query(&(*query), result);
-		
-		delete result;
+		vector<SpatialObject *> result;
+		myIndex->query(&(*query), &result);
 	}
   delete myIndex;
 }
