@@ -53,6 +53,7 @@ int main(int argc, const char* argv[])
 	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end();query++) {
 		vector<SpatialObject *> result;
 		myIndex->query(&(*query), &result);
+    vector<SpatialObject*>::iterator it;
 	}
   delete myIndex;
 }
