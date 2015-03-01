@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 			string>(&distribution)->default_value("uniform"),
 			"distribution, i.e., uniform or normal")("elements",
 			po::value<long>(), "number of elements")
-      ("queryRatio", po::value<double>(&ratio), "the ratio between data and queries");
+      ("queryRatio", po::value<double>(&ratio), "the ratio between queries and data");
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -61,10 +61,10 @@ int main(int argc, char* argv[]) {
 
 	if (dataFile.empty()) {
 		if (distribution.compare("normal") == 0) {
-			dataFilename << "RandomData-Normal-500-250-" << (elements / 1000)
+			dataFilename << "RandomData-Normal-500-250-" << (elements/1000)
 					<< "K.bin";
 		} else {
-			dataFilename << "RandomData-Uniform-" << (elements / 1000) << "K.bin";
+			dataFilename << "RandomData-Uniform-" << (elements/1000) << "K.bin";
 		}
 	} else {
 		dataFilename << dataFile;
@@ -72,10 +72,10 @@ int main(int argc, char* argv[]) {
 
 	if (queryFile.empty()) {
 		if (distribution.compare("normal") == 0) {
-			queryFilename << "RandomQuery-Normal-500-250-" << (elements / 1000)
+			queryFilename << "RandomQuery-Normal-500-250-" << (elements/1000)
 					<< "K.bin";
 		} else {
-			queryFilename << "RandomQuery-Uniform-" << (elements / 1000) << "K.txt";
+			queryFilename << "RandomQuery-Uniform-" << (elements*ratio/1000) << "K.txt";
 		}
 	} else {
 		queryFilename << queryFile;
