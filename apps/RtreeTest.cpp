@@ -31,19 +31,18 @@ int main(int argc, const char* argv[]) {
 	}
 
 	/********************** BUILDING **********************/
-	Timer building;
-	building.start();
+//	Timer building;
+//	building.start();
 	RtreeIndex* myIndex = new RtreeIndex();
 	DataFileReader* input = new DataFileReader(datafile);
 
 	myIndex->buildIndex(input);
 
 	delete input;
-	building.stop();
-	cout << "Building Time: " << building << endl;
+//	building.stop();
+//	cout << "Building Time: " << building << endl;
 	
   myIndex->setObjectType(VERTEX);
-	//rtree->loadIndex(inputStem, BOX);
 
 	/********************** DO QUERIES **********************/
 	vector<SpatialQuery> queries;
@@ -52,7 +51,6 @@ int main(int argc, const char* argv[]) {
 	for(vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) {
 		vector<SpatialObject *> result;
 		myIndex->kNNQuery(&(*query), &result);
-    cout << "Results: " << result.size() << endl;
 
     vector<FLAT::spaceUnit> results;
     for(vector<SpatialObject*>::iterator i = result.begin(); i != result.end(); ++i)
@@ -61,11 +59,6 @@ int main(int argc, const char* argv[]) {
       results.push_back(v[0]);
       delete *i;
     }
-    for(size_t i = 0; i < results.size(); ++i)
-    {
-      cout << results[i] << ", ";
-    }
-    cout << endl;
 	}
 
   delete myIndex;
