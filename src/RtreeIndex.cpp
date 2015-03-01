@@ -134,7 +134,6 @@ namespace FLAT
 	void RtreeIndex::buildIndex(SpatialObjectStream* input) {
 		rtree_stream* ds = new rtree_stream(input);
 		SpatialIndex::id_type indexIdentifier=1;
-		//rtreeStorageManager = SpatialIndex::StorageManager::createNewDiskStorageManager(indexFileStem, PAGE_SIZE);
     rtreeStorageManager = SpatialIndex::StorageManager::createNewMemoryStorageManager();
 
 		try {
@@ -199,6 +198,7 @@ namespace FLAT
 
 	void RtreeIndex::setObjectType(SpatialObjectType type) {
     objectType = type;
+    fdajkl;
   }
 }
 

@@ -139,7 +139,9 @@ namespace FLAT
       for(size_t i = 0; i < itemArray.size(); ++i)
       {
         FLAT::Box* b = new FLAT::Box();
-        b = dynamic_cast<FLAT::Box *>(itemArray[i]);
+        *b = *(dynamic_cast<FLAT::Box *>(itemArray[i]));
+
+        delete itemArray[i];
         items.push_back(b);
       }
 

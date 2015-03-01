@@ -94,7 +94,9 @@ namespace FLAT
 
   FLATIndex::~FLATIndex()
   {
+    delete seedtree;
     delete payload;
+    delete rtreeStorageManager;
     delete metadataStructure;
   }
 
@@ -116,7 +118,7 @@ namespace FLAT
     uint32 fanout = (uint32)floor(PAGE_SIZE-76+0.0)/(objectSize+12+0.0);
 
     SpatialIndex::id_type indexIdentifier=1;
-    SpatialIndex::ISpatialIndex *linkerTree = SpatialIndex::RTree::createAndBulkLoadNewRTree (
+    SpatialIndex::ISpatialIndex* linkerTree = SpatialIndex::RTree::createAndBulkLoadNewRTree (
         SpatialIndex::RTree::BLM_STR,
         *metaStream,
         *rtreeStorageManagerTemp,
@@ -147,6 +149,8 @@ namespace FLAT
     //  cout << metaDataStream->volumeDistributon[i] << "\t" << metaDataStream->volumeLink[i] << "\t"
     //    << ( (metaDataStream->volumeLink[i]+0.0)/(metaDataStream->volumeDistributon[i]+0.0)) << "\n" ;
 #endif
+    delete linkerTree;
+    delete metaStream;
     delete metaDataStream;
     delete rtreeStorageManagerTemp;
 
