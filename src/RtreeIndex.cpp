@@ -198,7 +198,6 @@ namespace FLAT
 
 	void RtreeIndex::setObjectType(SpatialObjectType type) {
     objectType = type;
-    fdajkl;
   }
 }
 
