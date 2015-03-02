@@ -424,7 +424,6 @@ namespace FLAT
 #endif
       }
     }
-    cout << "Teseelation: fjadl\n";
     Partition.low[0] = universe.low[0];
     xSort->clean();
 
@@ -632,7 +631,6 @@ namespace FLAT
 
   void FLATIndex::kNNQuery(SpatialQuery* query, vector<SpatialObject*>* results)
   {
-    cout << "In kNN query\n";
     set<id> visitedMetaPages;
     priority_queue<kNNEntry*, vector<kNNEntry*>, kNNEntry::ascending> queue;
 
@@ -649,13 +647,13 @@ namespace FLAT
 
     if (seedID>=0)
     {
-      // Push seeded Metadata entries in priority queue //
+      // Push seeded Metadata entries in priority queue
       nodeSkeleton* nss = SeedBuilder::readNode(seedID, rtreeStorageManager);
       query->stats.FLAT_metaDataIOs++;
       if (nss->nodeType == SpatialIndex::RTree::PersistentLeaf)
         for (unsigned i = 0; i < nss->children; i++)
         {
-          MetadataEntry* m =new MetadataEntry(nss->m_pData[i], nss->m_pDataLength[i]);
+          MetadataEntry* m = new MetadataEntry(nss->m_pData[i], nss->m_pDataLength[i]);
           for (int a=0;a<DIMENSION;a++)
           {
             m->partitionMbr.low[a]  = nss->m_ptrMBR[i]->m_pLow[a];
@@ -686,16 +684,16 @@ namespace FLAT
         else if (results->back()->pointDistance(query->Point)!=topEntry->minDist)	count++;
         if (count > query->k) 
         {
+          delete topEntry;
           break;
-        } else {
+        } else 
+        {
           results->push_back(topEntry->sobj);
         }
-      }
-      else
+      } else
       {
         // put all Spatial Objects in page in queue
         vector<SpatialObject*> objects;
-        cout << "Getting page: " << topEntry->me->pageId << endl;
         payload->getPageInMemory(objects, topEntry->me->pageId);
         query->stats.FLAT_payLoadIOs++;
         for (vector<SpatialObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
@@ -707,7 +705,7 @@ namespace FLAT
         for (set<id>::iterator links = topEntry->me->pageLinks.begin(); links != topEntry->me->pageLinks.end(); links++)
         {
           if(visitedMetaPages.find(*links) != visitedMetaPages.end()) {continue;}
-          nodeSkeleton * nss = SeedBuilder::readNode(*links, rtreeStorageManager);
+          nodeSkeleton* nss = SeedBuilder::readNode(*links, rtreeStorageManager);
           query->stats.FLAT_metaDataIOs++;
           if (nss->nodeType == SpatialIndex::RTree::PersistentLeaf)
           {
@@ -720,15 +718,12 @@ namespace FLAT
                 m->partitionMbr.high[a] = nss->m_ptrMBR[i]->m_pHigh[a];
               }
               queue.push(new kNNEntry(m, query->Point,*links));
-              //if (Box::overlap(m->partitionMbr,topEntry->me->partitionMbr)) neighbors++;
-              //cout << "pushing neigh MD distance = " << m->pageMbr.pointDistance(query.Point)    << " ID = " << m->pageId << " MBR =" <<m->pageMbr<< " prMBR=" << m->partitionMbr << endl;
             }
           }
           visitedMetaPages.insert(*links);
+          delete nss;
         }
         delete topEntry->me;
-        //totalNeighbours+=neighbors;
-        //if (neighbors>=maxLinks) maxLinks=neighbors;
       }
       delete topEntry;
     }
@@ -740,8 +735,6 @@ namespace FLAT
       queue.pop();
       if (top->isMetaPage)
         delete top->me;
-      else
-        //delete top->sobj;
       delete top;
     }
 

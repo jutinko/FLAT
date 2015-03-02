@@ -56,8 +56,8 @@ namespace FLAT
 		int nonLeafFanout = (PAGE_SIZE-76.0) / 60.0;
 
 		SpatialIndex::id_type indexIdentifier=1;
-		//SpatialIndex::ISpatialIndex *seedTree =
-		SpatialIndex::RTree::createAndBulkLoadNewRTree (
+    // Doing this becuase we want to use the stream data
+		SpatialIndex::ISpatialIndex *seedTree =	SpatialIndex::RTree::createAndBulkLoadNewRTree (
 		        SpatialIndex::RTree::BLM_STR,
 		        *stream,
 		        *rtreeStorageManager,
@@ -65,7 +65,7 @@ namespace FLAT
 		        leafFanout, DIMENSION,
 		        SpatialIndex::RTree::RV_RSTAR,
 		        indexIdentifier);
-		//delete seedTree;
+		delete seedTree;
 		vector<SpatialIndex::id_type> keys;
 
 		// Get all the Node keys in vector .. in memory!
