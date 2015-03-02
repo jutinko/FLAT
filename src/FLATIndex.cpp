@@ -2,6 +2,7 @@
 #include "ExternalSort.hpp"
 #include "SpatialQuery.hpp"
 #include "Timer.hpp"
+#include "cstdio"
 
 namespace FLAT
 {
@@ -76,6 +77,133 @@ namespace FLAT
           __attribute__((__unused__)))
       {
       }
+  };
+
+  class kNNVisitor : public SpatialIndex::IVisitor
+  {
+    public:
+      SpatialQuery* query;
+      bool done;
+
+      kNNVisitor(SpatialQuery* query)
+      {
+        this->query = query;
+        done = false;
+      }
+
+      ~kNNVisitor()
+      {
+      }
+
+      virtual void visitNode(const SpatialIndex::INode& in)
+      {
+        //      cout << "visited node\n";
+        //      uint32 children = in.getChildrenCount();
+        //
+        //      Box Parent;
+        //      SpatialIndex::IShape* shape;
+        //      in.getShape(&shape);
+        //      SpatialIndex::Region reg;
+        //      shape->getMBR(reg);
+        //      for (int d=0;d<DIMENSION;d++)
+        //      {
+        //        Parent.low[d] = reg.m_pLow[d];
+        //        Parent.high[d] = reg.m_pHigh[d];
+        //      }
+        //      cout << "PARENT NODE: LEVEL= " << in.getLevel() << " ID= " << in.getIdentifier() << "   MBR= " << Parent << endl;
+        //      delete shape;
+        //
+        //      for (int i=0;i<children;i++)
+        //      {
+        //        Box Child;
+        //        SpatialIndex::IShape* childShape;
+        //        in.getChildShape(i,&childShape);
+        //        SpatialIndex::Region reg;
+        //        childShape->getMBR(reg);
+        //        for (int d=0;d<DIMENSION;d++)
+        //        {
+        //          Child.low[d] = reg.m_pLow[d];
+        //          Child.high[d] = reg.m_pHigh[d];
+        //        }
+        //        cout << "\tCHILD NODE: ID= " << in.getChildIdentifier(i) << "   MBR= " << Child << endl;
+        //        delete childShape;
+        //      }
+
+        if (in.isLeaf())
+        {
+          query->stats.FLAT_metaDataIOs++;
+        }
+        else
+        {
+          query->stats.FLAT_seedIOs++;
+        }
+      }
+
+      virtual void visitData(const SpatialIndex::IData& in)
+      {
+      }
+
+      virtual void visitUseless()
+      {
+      }
+
+      virtual bool doneVisiting()
+      {
+        return done;
+      }
+
+      virtual void visitData(const SpatialIndex::IData& in, SpatialIndex::id_type id)
+      {
+        done = true;
+        query->stats.FLAT_seedId = id;
+      }
+
+      virtual void visitData(std::vector<const SpatialIndex::IData *>& v
+          __attribute__((__unused__)))
+      {
+      }
+  };
+
+  class kNNEntry
+  {
+    public:
+
+      SpatialObject* sobj;
+      MetadataEntry* me;
+      bigSpaceUnit minDist;
+      id metapageId;
+      id metaentryId;
+      bool isMetaPage;
+
+      kNNEntry(SpatialObject* object,Vertex P,id metaPageId,id metaEntryId)
+      {
+        sobj = object;
+        minDist = sobj->pointDistance(P);
+        isMetaPage = false;
+        me = NULL;
+        metapageId = metaPageId;
+        metaentryId = metaEntryId;
+      }
+
+      kNNEntry(MetadataEntry* metaEntry,Vertex P,id metaPageId)
+      {
+        me = metaEntry;
+        minDist = me->partitionMbr.pointDistance(P);
+        isMetaPage = true;
+        sobj = NULL;
+        metapageId = metaPageId;
+      }
+
+      ~kNNEntry()
+      {}
+
+      struct ascending : public std::binary_function<kNNEntry*, kNNEntry*, bool>
+    {
+      bool operator()(const kNNEntry* __x, const kNNEntry* __y) const
+      {
+        return __x->minDist > __y->minDist;
+      }
+    };
   };
 
   FLATIndex::FLATIndex()
@@ -296,6 +424,7 @@ namespace FLAT
 #endif
       }
     }
+    cout << "Teseelation: fjadl\n";
     Partition.low[0] = universe.low[0];
     xSort->clean();
 
@@ -499,6 +628,124 @@ namespace FLAT
 
     queueLength += visitedMetaPages.size()+maxQueueLength;
     totalPageReadTimer.add(pageReadTimer);
+  }
+
+  void FLATIndex::kNNQuery(SpatialQuery* query, vector<SpatialObject*>* results)
+  {
+    cout << "In kNN query\n";
+    set<id> visitedMetaPages;
+    priority_queue<kNNEntry*, vector<kNNEntry*>, kNNEntry::ascending> queue;
+
+    double coordinate[DIMENSION];
+    for (int i=0;i<DIMENSION;i++)
+    {
+      coordinate[i] = (double)(query->Point[i]);
+    }
+
+    SpatialIndex::Point query_point = SpatialIndex::Point(coordinate, DIMENSION);
+    kNNVisitor visitor(query);
+    seedtree->seedKNN(query_point, visitor);
+    int32 seedID =  query->stats.FLAT_seedId;
+
+    if (seedID>=0)
+    {
+      // Push seeded Metadata entries in priority queue //
+      nodeSkeleton* nss = SeedBuilder::readNode(seedID, rtreeStorageManager);
+      query->stats.FLAT_metaDataIOs++;
+      if (nss->nodeType == SpatialIndex::RTree::PersistentLeaf)
+        for (unsigned i = 0; i < nss->children; i++)
+        {
+          MetadataEntry* m =new MetadataEntry(nss->m_pData[i], nss->m_pDataLength[i]);
+          for (int a=0;a<DIMENSION;a++)
+          {
+            m->partitionMbr.low[a]  = nss->m_ptrMBR[i]->m_pLow[a];
+            m->partitionMbr.high[a] = nss->m_ptrMBR[i]->m_pHigh[a];
+          }
+          queue.push(new kNNEntry(m, query->Point, seedID));
+        }
+      visitedMetaPages.insert(seedID);
+      delete nss;
+    }
+    else
+    {
+      //cout << "no seed found.. but thats not possible.. maybe query done outside universe.. solution= make infinite univers bounds" << endl;
+      return;
+    }
+
+    // Crawling and finding nearest objects //
+    uint32 count= 0;
+    while (!queue.empty())
+    {
+      kNNEntry* topEntry = queue.top();
+      queue.pop();
+
+      // if the top of PrQueue was a spatial object
+      if (topEntry->isMetaPage==false)
+      {
+        if (results->empty()) count++;
+        else if (results->back()->pointDistance(query->Point)!=topEntry->minDist)	count++;
+        if (count > query->k) 
+        {
+          break;
+        } else {
+          results->push_back(topEntry->sobj);
+        }
+      }
+      else
+      {
+        // put all Spatial Objects in page in queue
+        vector<SpatialObject*> objects;
+        cout << "Getting page: " << topEntry->me->pageId << endl;
+        payload->getPageInMemory(objects, topEntry->me->pageId);
+        query->stats.FLAT_payLoadIOs++;
+        for (vector<SpatialObject*>::iterator it = objects.begin(); it != objects.end(); ++it)
+        {
+          queue.push(new kNNEntry(*it, query->Point, topEntry->metapageId, topEntry->me->pageId));
+        }
+
+        // put all Metadata neighbor entries in queue
+        for (set<id>::iterator links = topEntry->me->pageLinks.begin(); links != topEntry->me->pageLinks.end(); links++)
+        {
+          if(visitedMetaPages.find(*links) != visitedMetaPages.end()) {continue;}
+          nodeSkeleton * nss = SeedBuilder::readNode(*links, rtreeStorageManager);
+          query->stats.FLAT_metaDataIOs++;
+          if (nss->nodeType == SpatialIndex::RTree::PersistentLeaf)
+          {
+            for (unsigned i = 0; i < nss->children; i++)
+            {
+              MetadataEntry* m =new MetadataEntry(nss->m_pData[i], nss->m_pDataLength[i]);
+              for (int a=0;a<DIMENSION;a++)
+              {
+                m->partitionMbr.low[a]  = nss->m_ptrMBR[i]->m_pLow[a];
+                m->partitionMbr.high[a] = nss->m_ptrMBR[i]->m_pHigh[a];
+              }
+              queue.push(new kNNEntry(m, query->Point,*links));
+              //if (Box::overlap(m->partitionMbr,topEntry->me->partitionMbr)) neighbors++;
+              //cout << "pushing neigh MD distance = " << m->pageMbr.pointDistance(query.Point)    << " ID = " << m->pageId << " MBR =" <<m->pageMbr<< " prMBR=" << m->partitionMbr << endl;
+            }
+          }
+          visitedMetaPages.insert(*links);
+        }
+        delete topEntry->me;
+        //totalNeighbours+=neighbors;
+        //if (neighbors>=maxLinks) maxLinks=neighbors;
+      }
+      delete topEntry;
+    }
+
+    // Clean Queue before leaving
+    while (! queue.empty())
+    {
+      kNNEntry* top = queue.top();
+      queue.pop();
+      if (top->isMetaPage)
+        delete top->me;
+      else
+        //delete top->sobj;
+      delete top;
+    }
+
+    query->stats.ResultPoints = results->size();
   }
 
   void FLATIndex::loadIndex()

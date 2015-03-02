@@ -9,48 +9,50 @@
 
 namespace FLAT
 {
-	/*
-	 * Class responsible for managing the Index structure, i.e Metadata, SeedTree and Payload
-	 * This is an STR Style FLAT indexing
-	 */
-	class FLATIndex
-	{
-	public:
-		vector<MetadataEntry*>* metadataStructure;     	// Array of meta data entries leaf Level of Seed Tree
-		PayLoad*    	payload;	   		   			// The Structure managing the payload
-		SpatialIndex::ISpatialIndex* seedtree;
-		SpatialIndex::IStorageManager* rtreeStorageManager;
+  /*
+   * Class responsible for managing the Index structure, i.e Metadata, SeedTree and Payload
+   * This is an STR Style FLAT indexing
+   */
+  class FLATIndex
+  {
+    public:
+      vector<MetadataEntry*>* metadataStructure;     	// Array of meta data entries leaf Level of Seed Tree
+      PayLoad*    	payload;	   		   			// The Structure managing the payload
+      SpatialIndex::ISpatialIndex* seedtree;
+      SpatialIndex::IStorageManager* rtreeStorageManager;
 
-		uint64 objectCount;
-		uint32 objectSize;
-		SpatialObjectType objectType;
-		uint64 pageCount;
-		Box universe;
-		float binCount;
-		uint64 objectPerPage;
-		uint64 objectPerXBins;
-		uint64 objectPerYBins;
-		uint64 footprint;
+      uint64 objectCount;
+      uint32 objectSize;
+      SpatialObjectType objectType;
+      uint64 pageCount;
+      Box universe;
+      float binCount;
+      uint64 objectPerPage;
+      uint64 objectPerXBins;
+      uint64 objectPerYBins;
+      uint64 footprint;
 
-		FLATIndex();
+      FLATIndex();
 
-		~FLATIndex();
+      ~FLATIndex();
 
-		void buildIndex(uint64 fp,SpatialObjectStream* input);
+      void buildIndex(uint64 fp,SpatialObjectStream* input);
 
-		void loadIndex();
+      void loadIndex();
 
-		void query(SpatialQuery *qi, vector<SpatialObject *> *result);
+      void query(SpatialQuery *qi, vector<SpatialObject *>* result);
 
-	private:
-		void initialize(SpatialObjectStream* input);
+      void kNNQuery(SpatialQuery* q, vector<SpatialObject*>* result);
 
-		void doTessellation(SpatialObjectStream* input);
+    private:
+      void initialize(SpatialObjectStream* input);
 
-		void induceConnectivity();
+      void doTessellation(SpatialObjectStream* input);
 
-		void induceConnectivityFaster();
+      void induceConnectivity();
 
-	};
+      void induceConnectivityFaster();
+
+  };
 }
 #endif

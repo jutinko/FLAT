@@ -138,11 +138,11 @@ namespace FLAT
       vector<SpatialObject*> items;
       for(size_t i = 0; i < itemArray.size(); ++i)
       {
-        FLAT::Box* b = new FLAT::Box();
-        *b = *(dynamic_cast<FLAT::Box *>(itemArray[i]));
+        FLAT::Vertex* v = new FLAT::Vertex();
+        *v = *(dynamic_cast<FLAT::Vertex *>(itemArray[i]));
 
         delete itemArray[i];
-        items.push_back(b);
+        items.push_back(v);
       }
 
       table.insert(make_pair(id, items));
