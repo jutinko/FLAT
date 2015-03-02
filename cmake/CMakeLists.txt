@@ -4,7 +4,7 @@ PROJECT(SpatialIndex)
 SET(MYLIB "FLAT")
 OPTION(MAKE_EXECUTABLES "Make the executables." ON)
 OPTION(DEBUG "Whether to add debug flag to g++." ON)
-OPTION(LEAK "Whether to leak memory." ON)
+OPTION(LEAK "Whether to leak memory." OFF)
 
 ############## SETTING DIRECTORY PATHS #################
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/)
