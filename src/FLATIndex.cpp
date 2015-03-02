@@ -504,6 +504,7 @@ namespace FLAT
   void FLATIndex::loadIndex()
   {
     SpatialIndex::id_type indexIdentifier = 1;
+
     seedtree = SpatialIndex::RTree::loadRTree(*rtreeStorageManager, indexIdentifier);
   }
 }
