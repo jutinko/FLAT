@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 	po::options_description desc("Options");
 	desc.add_options()("help", "produce help message")("dataFile", po::value<
 			string>(&dataFile), "dataFile file name")("queryFile", po::value<
-			string>(&dataFile), "queryFile file name")("distribution", po::value<
+			string>(&queryFile), "queryFile file name")("distribution", po::value<
 			string>(&distribution)->default_value("uniform"),
 			"distribution, i.e., uniform or normal")("elements",
 			po::value<long>(), "number of elements")
