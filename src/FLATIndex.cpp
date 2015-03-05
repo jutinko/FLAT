@@ -97,38 +97,6 @@ namespace FLAT
 
       virtual void visitNode(const SpatialIndex::INode& in)
       {
-        //      cout << "visited node\n";
-        //      uint32 children = in.getChildrenCount();
-        //
-        //      Box Parent;
-        //      SpatialIndex::IShape* shape;
-        //      in.getShape(&shape);
-        //      SpatialIndex::Region reg;
-        //      shape->getMBR(reg);
-        //      for (int d=0;d<DIMENSION;d++)
-        //      {
-        //        Parent.low[d] = reg.m_pLow[d];
-        //        Parent.high[d] = reg.m_pHigh[d];
-        //      }
-        //      cout << "PARENT NODE: LEVEL= " << in.getLevel() << " ID= " << in.getIdentifier() << "   MBR= " << Parent << endl;
-        //      delete shape;
-        //
-        //      for (int i=0;i<children;i++)
-        //      {
-        //        Box Child;
-        //        SpatialIndex::IShape* childShape;
-        //        in.getChildShape(i,&childShape);
-        //        SpatialIndex::Region reg;
-        //        childShape->getMBR(reg);
-        //        for (int d=0;d<DIMENSION;d++)
-        //        {
-        //          Child.low[d] = reg.m_pLow[d];
-        //          Child.high[d] = reg.m_pHigh[d];
-        //        }
-        //        cout << "\tCHILD NODE: ID= " << in.getChildIdentifier(i) << "   MBR= " << Child << endl;
-        //        delete childShape;
-        //      }
-
         if (in.isLeaf())
         {
           query->stats.FLAT_metaDataIOs++;
@@ -208,14 +176,14 @@ namespace FLAT
 
   FLATIndex::FLATIndex()
   {
-    objectCount=0;
-    objectSize=0;
-    pageCount=0;
-    binCount=0;
-    objectPerPage=0;
-    objectPerXBins=0;
-    objectPerYBins=0;
-    footprint=0;
+    objectCount = 0;
+    objectSize = 0;
+    pageCount = 0;
+    binCount = 0;
+    objectPerPage = 0;
+    objectPerXBins = 0;
+    objectPerYBins = 0;
+    footprint = 0;
     payload = new PayLoad();
     metadataStructure = new vector<MetadataEntry*>();
   }
@@ -231,6 +199,8 @@ namespace FLAT
   void FLATIndex::buildIndex(uint64 fp,SpatialObjectStream* input)
   {
     footprint = fp;
+
+	  /********************** DO TESSELLATION **********************/
     Timer tesselation,seeding,linker;
     tesselation.start();
 
@@ -268,15 +238,8 @@ namespace FLAT
     cout << "SUMMED VOLUME: " << metaDataStream->sumVolume <<endl;
     cout << "AVERAGE LINKS: " << ((metaDataStream->links+0.0) / (metaDataStream->pages+0.0)) << endl;
     cout << "AVERAGE VOLUME: " << ((metaDataStream->sumVolume+0.0) / (metaDataStream->pages+0.0)) << endl;
-
-    //for (int i=0;i<100;i++)
-    //  cout << metaDataStream->frequency[i] << "\n";
-
-    //cout << "OVERFLOW VOLUME: " << metaDataStream->overflow <<endl;
-    //for (int i=0;i<100;i++)
-    //  cout << metaDataStream->volumeDistributon[i] << "\t" << metaDataStream->volumeLink[i] << "\t"
-    //    << ( (metaDataStream->volumeLink[i]+0.0)/(metaDataStream->volumeDistributon[i]+0.0)) << "\n" ;
 #endif
+
     delete linkerTree;
     delete metaStream;
     delete metaDataStream;
@@ -315,7 +278,6 @@ namespace FLAT
       << "OBJECTS IN EVERY Z BIN or PAGE: " << objectPerPage << endl;
 #endif
     metadataStructure->reserve(pageCount);
-    //payload->create(indexFileStem,PAGE_SIZE,objectPerPage,objectSize,objectType);
     payload->createInMemory(objectType);
   }
 
@@ -325,8 +287,8 @@ namespace FLAT
     ExternalSort* ySort = new ExternalSort(footprint,1,objectType);
     ExternalSort* zSort = new ExternalSort(footprint,2,objectType);
     Box Partition = universe;
-    uint64 PageCount=0;
-    uint64 dataCount=0;
+    uint64 PageCount = 0;
+    uint64 dataCount = 0;
 
 #ifdef DEBUG
     int idx=0,idy=0,idz=0;
@@ -478,25 +440,6 @@ namespace FLAT
 #ifdef DEBUG
     cout << "TOTAL PAGES: " << pages <<endl;
     cout << "TOTAL LINKS ADDED: "<< links <<endl;
-
-    //    int frequency[100];
-    //    for (int i=0;i<100;i++) frequency[i]=0;
-    //    for (uint32_t j=0;j<pages;j++)
-    //    {
-    //      if (metadataStructure->at(j)->pageLinks.size()>100)
-    //      {
-    //        cout << "id("<< j<< ") = [" <<  metadataStructure->at(j)->i << "," << metadataStructure->at(j)->j << "," << metadataStructure->at(j)->k << "] \tLINKS:" << metadataStructure->at(j)->pageLinks.size() << " \tMBR" << metadataStructure->at(j)->partitionMbr << "\n";
-    //
-    //        //for (set<id>::iterator i = metadataStructure->at(j)->pageLinks.begin();i !=  metadataStructure->at(j)->pageLinks.end(); ++i)
-    //        //  cout << "\tid("<< *i << ") = [" <<  metadataStructure->at(*i)->i << "," << metadataStructure->at(*i)->j << "," << metadataStructure->at(*i)->k << "] \tLINKS:" << metadataStructure->at(*i)->pageLinks.size() << " \tMBR" << metadataStructure->at(*i)->partitionMbr << "\n";
-    //      }
-    //      if (metadataStructure->at(j)->pageLinks.size()<100)
-    //        frequency[metadataStructure->at(j)->pageLinks.size()]++;
-    //    }
-
-
-    //    for (int i=0;i<100;i++)
-    //      cout << "Links: " << i << " Frequency: " << frequency[i] << "\n";
 #endif
   }
 
