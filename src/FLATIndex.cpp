@@ -208,7 +208,7 @@ namespace FLAT
     doTessellation(input);
 
     tesselation.stop();
-    cout << "Tessellation Duration: " << tesselation << "\n";
+    //cout << "Tessellation Duration: " << tesselation << "\n";
     linker.start();
 
     MetaDataStream* metaStream = new MetaDataStream(metadataStructure);
@@ -226,7 +226,7 @@ namespace FLAT
         indexIdentifier);
 
     linker.stop();
-    cout << "Linker Creation Duration: " << linker << "\n";
+    //cout << "Linker Creation Duration: " << linker << "\n";
     seeding.start();
 
     MetaDataStream* metaDataStream = new MetaDataStream(metadataStructure,linkerTree);
@@ -246,7 +246,7 @@ namespace FLAT
     delete rtreeStorageManagerTemp;
 
     seeding.stop();
-    cout << "Building Seed Structure & Links Duration: " << seeding << "\n";
+    //cout << "Building Seed Structure & Links Duration: " << seeding << "\n";
 
   }
 
@@ -389,12 +389,12 @@ namespace FLAT
     Partition.low[0] = universe.low[0];
     xSort->clean();
 
-    cout << "PAGES USED FOR INDEX: " << PageCount << endl;
-    cout << "OBJECTS INDEXED: " << dataCount << endl;
+    //cout << "PAGES USED FOR INDEX: " << PageCount << endl;
+    //cout << "OBJECTS INDEXED: " << dataCount << endl;
 
-    xSort->print();
-    ySort->print();
-    zSort->print();
+    //xSort->print();
+    //ySort->print();
+    //zSort->print();
     delete zSort;
     delete ySort;
     delete xSort;

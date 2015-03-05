@@ -27,6 +27,9 @@ RtreeIndex* build(string datafile)
 
 void query(RtreeIndex* myIndex, string queryfile)
 {
+	Timer querying;
+	querying.start();
+
 	/********************** DO QUERIES **********************/
 	vector<SpatialQuery> queries;
 	SpatialQuery::ReadQueries(queries, queryfile);
@@ -36,6 +39,8 @@ void query(RtreeIndex* myIndex, string queryfile)
 		vector<SpatialObject *> result;
 		myIndex->kNNQuery(&(*query), &result);
 	}
+	querying.stop();
+  cout << querying << endl;
 }
 
 int main(int argc, const char* argv[])

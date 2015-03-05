@@ -27,27 +27,27 @@ FLATIndex* build(string datafile, uint32 footprint)
 
 void query(FLATIndex* myIndex, string queryfile)
 {
+	Timer querying;
+	querying.start();
+
 	vector<SpatialQuery> queries;
 	SpatialQuery::ReadQueries(queries, queryfile);
 
+	/********************** DO QUERIES **********************/
 	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end();query++)
   {
 		vector<SpatialObject *> result;
 		myIndex->kNNQuery(&(*query), &result);
-    //vector<SpatialObject*>::iterator it;
-    //for(it = result.begin(); it != result.end(); ++it)
-    //{
-    //  printf("%f, ", (*it)->getCenter()[0]);
-    //}
-    //printf("\n");
-    //
 	}
+
+	querying.stop();
+  cout << querying << endl;
 }
 
 int main(int argc, const char* argv[])
 {
 	string datafile, queryfile;
-	uint32 footprint;
+	uint32 footprint = 0;
 
 	po::options_description desc("Options");
 	desc.add_options()
@@ -61,11 +61,15 @@ int main(int argc, const char* argv[])
 	po::store(po::parse_command_line(argc, argv, desc), vm);
 	po::notify(vm);
 
-	if (vm.count("help") || argc < 4)
+	if(vm.count("help") || argc < 4)
   {
 		cout << desc << "\n";
 		return 1;
 	}
+  if(footprint == 0)
+  {
+    footprint = 2000;
+  }
 
 	/********************** BUILDING **********************/
   FLATIndex* myIndex = build(datafile, footprint);

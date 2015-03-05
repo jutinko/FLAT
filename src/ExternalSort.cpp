@@ -11,7 +11,6 @@ namespace FLAT
 		objectByteSize = SpatialObjectFactory::getSize(objType);
 		objectCount = 0;
 		maxObjectsInMemory = footPrintMB*1024*1024/objectByteSize;
-		cout << "Max objects in Memory :" << maxObjectsInMemory << endl;
 		buffer.reserve(maxObjectsInMemory);
 		buckets.clear();
 		buffer.clear();
