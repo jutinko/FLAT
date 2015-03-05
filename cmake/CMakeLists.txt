@@ -5,6 +5,7 @@ SET(MYLIB "FLAT")
 OPTION(MAKE_EXECUTABLES "Make the executables." ON)
 OPTION(DEBUG "Whether to add debug flag to g++." ON)
 OPTION(LEAK "Whether to leak memory." OFF)
+OPTION(PRINTRESULT "Whether to leak memory." OFF)
 
 ############## SETTING DIRECTORY PATHS #################
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/../bin/)
@@ -41,6 +42,10 @@ ENDIF (DEBUG)
 IF (LEAK)
   ADD_DEFINITIONS("-DLEAK")
 ENDIF (LEAK)
+
+IF (PRINTRESULT)
+  ADD_DEFINITIONS("-DPRINTRESULT")
+ENDIF (PRINTRESULT)
 
 ADD_LIBRARY(${MYLIB} STATIC ${SRC_FILES})
 

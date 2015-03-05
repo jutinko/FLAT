@@ -38,6 +38,13 @@ void query(RtreeIndex* myIndex, string queryfile)
   {
 		vector<SpatialObject *> result;
 		myIndex->kNNQuery(&(*query), &result);
+#ifdef PRINTRESULT
+    for(vector<SpatialObject*>::iterator it = result.begin(); it != result.end(); ++it)
+    {
+      printf("%f ", (*it)->getCenter()[0]);
+    }
+    printf("\n");
+#endif
 	}
 	querying.stop();
   cout << querying << endl;
