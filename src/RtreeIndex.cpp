@@ -124,17 +124,20 @@ namespace FLAT
   };
 
 
-  RtreeIndex::RtreeIndex() {
+  RtreeIndex::RtreeIndex()
+  {
     rtreeStorageManager = NULL;
     tree =  NULL;
   }
 
-  RtreeIndex::~RtreeIndex() {
+  RtreeIndex::~RtreeIndex()
+  {
     delete tree;
     delete rtreeStorageManager;
   }
 
-  void RtreeIndex::buildIndex(SpatialObjectStream* input) {
+  void RtreeIndex::buildIndex(SpatialObjectStream* input)
+  {
     rtree_stream* ds = new rtree_stream(input);
     SpatialIndex::id_type indexIdentifier=1;
     rtreeStorageManager = SpatialIndex::StorageManager::createNewMemoryStorageManager();
@@ -162,16 +165,16 @@ namespace FLAT
     delete ds;
   }
 
-  void RtreeIndex::loadIndex(string indexFileStem, SpatialObjectType type) {
-
+  void RtreeIndex::loadIndex(string indexFileStem, SpatialObjectType type)
+  {
     rtreeStorageManager = SpatialIndex::StorageManager::loadDiskStorageManager(indexFileStem);
     SpatialIndex::id_type indexIdentifier = 1;
     tree = SpatialIndex::RTree::loadRTree(*rtreeStorageManager, indexIdentifier);
     objectType = type;
   }
 
-  void RtreeIndex::query(SpatialQuery *q, vector<SpatialObject *> *result) {
-
+  void RtreeIndex::query(SpatialQuery *q, vector<SpatialObject *> *result)
+  {
     double lo[DIMENSION], hi[DIMENSION];
 
     for (int i=0;i<DIMENSION;i++) {
@@ -185,8 +188,8 @@ namespace FLAT
     tree->intersectsWithQuery(query_region, visitor);
   }
 
-  void RtreeIndex::kNNQuery(SpatialQuery *q, vector<SpatialObject *> *result) {
-
+  void RtreeIndex::kNNQuery(SpatialQuery *q, vector<SpatialObject *> *result)
+  {
     double values[DIMENSION];
 
     for (int i=0;i<DIMENSION;i++) {
@@ -199,8 +202,8 @@ namespace FLAT
     tree->nearestNeighborQuery(q->k, p, visitor);
   }
 
-  void RtreeIndex::setObjectType(SpatialObjectType type) {
+  void RtreeIndex::setObjectType(SpatialObjectType type)
+  {
     objectType = type;
   }
 }
-

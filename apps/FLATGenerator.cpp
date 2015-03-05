@@ -40,6 +40,7 @@ void query(FLATIndex* myIndex, string queryfile)
     //  printf("%f, ", (*it)->getCenter()[0]);
     //}
     //printf("\n");
+    //
 	}
 }
 
