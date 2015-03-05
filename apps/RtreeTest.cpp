@@ -9,7 +9,37 @@ using namespace FLAT;
 
 namespace po = boost::program_options;
 
-int main(int argc, const char* argv[]) {
+RtreeIndex* build(string datafile)
+{
+//	Timer building;
+//	building.start();
+	RtreeIndex* myIndex = new RtreeIndex();
+	DataFileReader* input = new DataFileReader(datafile);
+
+	myIndex->buildIndex(input);
+
+	delete input;
+  return myIndex;
+//	building.stop();
+//	cout << "Building Time: " << building << endl;
+  
+}
+
+void query(RtreeIndex* myIndex, string queryfile)
+{
+	/********************** DO QUERIES **********************/
+	vector<SpatialQuery> queries;
+	SpatialQuery::ReadQueries(queries, queryfile);
+
+	for(vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) 
+  {
+		vector<SpatialObject *> result;
+		myIndex->kNNQuery(&(*query), &result);
+	}
+}
+
+int main(int argc, const char* argv[])
+{
 
 	//string inputStem, queryfile;
 	string queryfile;
@@ -25,41 +55,20 @@ int main(int argc, const char* argv[]) {
 	po::store(po::parse_command_line(argc, argv, desc), vm);
 	po::notify(vm);
 
-	if (vm.count("help") || argc < 2) {
+	if (vm.count("help") || argc < 2)
+  {
 		cout << desc << "\n";
 		return 1;
 	}
 
 	/********************** BUILDING **********************/
-//	Timer building;
-//	building.start();
-	RtreeIndex* myIndex = new RtreeIndex();
-	DataFileReader* input = new DataFileReader(datafile);
-
-	myIndex->buildIndex(input);
-
-	delete input;
-//	building.stop();
-//	cout << "Building Time: " << building << endl;
 	
+  RtreeIndex* myIndex = build(datafile);
   myIndex->setObjectType(VERTEX);
 
-	/********************** DO QUERIES **********************/
-	vector<SpatialQuery> queries;
-	SpatialQuery::ReadQueries(queries, queryfile);
+	/********************** QUERYING **********************/
 
-	for(vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) {
-		vector<SpatialObject *> result;
-		myIndex->kNNQuery(&(*query), &result);
-
-    vector<FLAT::spaceUnit> results;
-    for(vector<SpatialObject*>::iterator i = result.begin(); i != result.end(); ++i)
-    {
-      Vertex v = (*i)->getCenter();
-      results.push_back(v[0]);
-      delete *i;
-    }
-	}
+  query(myIndex, queryfile);
 
   delete myIndex;
 }

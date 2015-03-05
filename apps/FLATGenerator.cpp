@@ -8,10 +8,43 @@ using namespace FLAT;
 
 namespace po = boost::program_options;
 
+FLATIndex* build(string datafile, uint32 footprint)
+{
+//	Timer building;
+//
+//	building.start();
+	DataFileReader* input = new DataFileReader(datafile);
+
+	FLATIndex* myIndex = new FLATIndex();
+	myIndex->buildIndex(footprint, input);
+  myIndex->loadIndex();
+	delete input;
+
+	//building.stop();
+	//cout << "Building Time: " << building << endl;
+  return myIndex;
+}
+
+void query(FLATIndex* myIndex, string queryfile)
+{
+	vector<SpatialQuery> queries;
+	SpatialQuery::ReadQueries(queries, queryfile);
+
+	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end();query++)
+  {
+		vector<SpatialObject *> result;
+		myIndex->kNNQuery(&(*query), &result);
+    //vector<SpatialObject*>::iterator it;
+    //for(it = result.begin(); it != result.end(); ++it)
+    //{
+    //  printf("%f, ", (*it)->getCenter()[0]);
+    //}
+    //printf("\n");
+	}
+}
+
 int main(int argc, const char* argv[])
 {
-///////////////////////// TEST STR INDEX AND TESSELLATION ////////////////////////////
-
 	string datafile, queryfile;
 	uint32 footprint;
 
@@ -27,33 +60,16 @@ int main(int argc, const char* argv[])
 	po::store(po::parse_command_line(argc, argv, desc), vm);
 	po::notify(vm);
 
-	if (vm.count("help") || argc < 4) {
+	if (vm.count("help") || argc < 4)
+  {
 		cout << desc << "\n";
 		return 1;
 	}
 
-	Timer building;
-
-	building.start();
-	DataFileReader* input = new DataFileReader(datafile);
-	cout << "heyo: " << endl;
-
-	FLATIndex* myIndex = new FLATIndex();
-	myIndex->buildIndex(footprint, input);
-  myIndex->loadIndex();
-
-	building.stop();
-	delete input;
-	cout << "Building Time: " << building << endl;
+	/********************** BUILDING **********************/
+  FLATIndex* myIndex = build(datafile, footprint);
 
 	/********************** DO QUERIES **********************/
-	vector<SpatialQuery> queries;
-	SpatialQuery::ReadQueries(queries, queryfile);
-
-	for (vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end();query++) {
-		vector<SpatialObject *> result;
-		myIndex->query(&(*query), &result);
-    vector<SpatialObject*>::iterator it;
-	}
+  query(myIndex, queryfile);
   delete myIndex;
 }
