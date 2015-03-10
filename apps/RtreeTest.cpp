@@ -11,33 +11,33 @@ namespace po = boost::program_options;
 
 RtreeIndex* build(string datafile)
 {
-//	Timer building;
-//	building.start();
-	RtreeIndex* myIndex = new RtreeIndex();
-	DataFileReader* input = new DataFileReader(datafile);
+//  Timer building;
+//  building.start();
+  RtreeIndex* myIndex = new RtreeIndex();
+  DataFileReader* input = new DataFileReader(datafile);
 
-	myIndex->buildIndex(input);
+  myIndex->buildIndex(input);
 
-	delete input;
+  delete input;
   return myIndex;
-//	building.stop();
-//	cout << "Building Time: " << building << endl;
+//  building.stop();
+//  cout << "Building Time: " << building << endl;
   
 }
 
 void query(RtreeIndex* myIndex, string queryfile)
 {
-	Timer querying;
-	querying.start();
+  Timer querying;
+  querying.start();
 
-	/********************** DO QUERIES **********************/
-	vector<SpatialQuery> queries;
-	SpatialQuery::ReadQueries(queries, queryfile);
+  /********************** DO QUERIES **********************/
+  vector<SpatialQuery> queries;
+  SpatialQuery::ReadQueries(queries, queryfile);
 
-	for(vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) 
+  for(vector<SpatialQuery>::iterator query = queries.begin(); query != queries.end(); query++) 
   {
-		vector<SpatialObject *> result;
-		myIndex->kNNQuery(&(*query), &result);
+    vector<SpatialObject *> result;
+    myIndex->kNNQuery(&(*query), &result);
 #ifdef PRINTRESULT
     for(vector<SpatialObject*>::iterator it = result.begin(); it != result.end(); ++it)
     {
@@ -45,40 +45,40 @@ void query(RtreeIndex* myIndex, string queryfile)
     }
     printf("\n");
 #endif
-	}
-	querying.stop();
+  }
+  querying.stop();
   cout << querying << endl;
 }
 
 int main(int argc, const char* argv[])
 {
 
-	//string inputStem, queryfile;
-	string queryfile;
-	string datafile;
+  //string inputStem, queryfile;
+  string queryfile;
+  string datafile;
 
-	po::options_description desc("Options");
-	desc.add_options()
-			("help", "produce help message")
-			("datafile", po::value<string>(&datafile), "name fordatafile")
-			("queryfile", po::value<string>(&queryfile), "file containing the queries");
+  po::options_description desc("Options");
+  desc.add_options()
+      ("help", "produce help message")
+      ("datafile", po::value<string>(&datafile), "name fordatafile")
+      ("queryfile", po::value<string>(&queryfile), "file containing the queries");
 
-	po::variables_map vm;
-	po::store(po::parse_command_line(argc, argv, desc), vm);
-	po::notify(vm);
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);
 
-	if (vm.count("help") || argc < 2)
+  if (vm.count("help") || argc < 2)
   {
-		cout << desc << "\n";
-		return 1;
-	}
+    cout << desc << "\n";
+    return 1;
+  }
 
-	/********************** BUILDING **********************/
-	
+  /********************** BUILDING **********************/
+  
   RtreeIndex* myIndex = build(datafile);
   myIndex->setObjectType(VERTEX);
 
-	/********************** QUERYING **********************/
+  /********************** QUERYING **********************/
 
   query(myIndex, queryfile);
 
