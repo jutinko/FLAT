@@ -200,7 +200,7 @@ namespace FLAT
   {
     footprint = fp;
 
-	  /********************** DO TESSELLATION **********************/
+    /********************** DO TESSELLATION **********************/
     Timer tesselation,seeding,linker;
     tesselation.start();
 
@@ -624,7 +624,7 @@ namespace FLAT
       if (topEntry->isMetaPage==false)
       {
         if (results->empty()) count++;
-        else if (results->back()->pointDistance(query->Point)!=topEntry->minDist)	count++;
+        else if (results->back()->pointDistance(query->Point)!=topEntry->minDist) count++;
         if (count > query->k) 
         {
           delete topEntry;

@@ -76,7 +76,7 @@ bitTranspose(unsigned nDims, unsigned nBits, bitmask_t inCoords)
             {
                 bitmask_t in = inCoords & inMask;
                 inCoords >>= inB;
-                coords |= (in & inFieldStarts) <<	oddShift++;
+                coords |= (in & inFieldStarts) << oddShift++;
                 in &= ~inFieldStarts;
                 in = (in | (in << shiftAmt)) & utMask;
                 utCoords |= in << (d*utB);
@@ -328,13 +328,13 @@ typedef union ieee754_double
 /* Together these comprise the mantissa.  */
         unsigned int mantissa0:20;
         unsigned int mantissa1:32;
-#else				/* Big endian.  */
+#else       /* Big endian.  */
 /* Together these comprise the mantissa.  */
         unsigned int mantissa1:32;
         unsigned int mantissa0:20;
         unsigned int exponent:11;
         unsigned int negative:1;
-#endif				/* Little endian.  */
+#endif        /* Little endian.  */
     } ieee;
 } ieee754_double;
 
