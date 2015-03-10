@@ -7,7 +7,7 @@ FLAT Library Dependancies
 ==========================
 Boost Library Installed (1.4, Libraries filesystem thread system) 
 
-RTREE, which can be cloned from: git@github.com:jutinko/RTREE.git
+RTREE, which can be cloned from: `git@github.com:jutinko/RTREE.git`
 
 1st Step: Compile R-tree library
 =================================
