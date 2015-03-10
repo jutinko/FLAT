@@ -1,20 +1,20 @@
-Building Requiments:
+Building Requiments
 ====================
 Cmake Installed
 c++ compiler
 
-FLAT Library Dependancies:
+FLAT Library Dependancies
 ==========================
 Boost Library Installed (1.4, Libraries filesystem thread system) 
 
-RTREE, which can be cloned from: [RTREE](git@github.com:jutinko/RTREE.git)
+RTREE, which can be cloned from: git@github.com:jutinko/RTREE.git
 
-1st Step: Compile R-tree library:
+1st Step: Compile R-tree library
 =================================
 >cd RTREE
 >make (should create a library libspatialindex.a)
 
-2nd Step: Compile FLAT executables:
+2nd Step: Compile FLAT executables
 ===================================
 >cd FLAT/build
 >cmake ../cmake -DDEBUG=FALSE -DPRINTRESULT=TRUE
