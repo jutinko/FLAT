@@ -25,8 +25,10 @@ TEST FLAT
 #########
 
 Build FLAT index and query
->cd FLAT/bin
->./FLATG --datafile data.bin --queryfile query.txt
+```
+cd FLAT/bin
+./FLATG --datafile data.bin --queryfile query.txt
+```
 
 ###########
 TEST R-TREE
