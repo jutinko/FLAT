@@ -1,6 +1,6 @@
 #!/bin/bash
 FOOTPRINT=2000
-TRIAL=10
+TRIAL=5
 
 function profile
 {
@@ -14,8 +14,8 @@ function profile
     do
       ../bin/./RtreeTest --datafile $data --queryfile $name.txt >> RTreeTimes.dat
       ../bin/./FLATGenerator --datafile $data --footprint $FOOTPRINT --queryfile $name.txt >> FLATTimes.dat
-      valgrind --tool=callgrind --callgrind-out-file=rtree.$name.callgrind.out ../bin/./RtreeTest --datafile $data --queryfile $data.txt
-      valgrind --tool=callgrind --callgrind-out-file=flat.$name.callgrind.out ../bin/./FLATGenerator --datafile $data --queryfile $data.txt
+      valgrind --tool=callgrind --callgrind-out-file=rtree.$name.callgrind.out ../bin/./RtreeTest --datafile $data --queryfile $name.txt
+      valgrind --tool=callgrind --callgrind-out-file=flat.$name.callgrind.out ../bin/./FLATGenerator --datafile $data --queryfile $name.txt
     done 
     echo >> RTreeTimes.dat
     echo >> FLATTimes.dat
