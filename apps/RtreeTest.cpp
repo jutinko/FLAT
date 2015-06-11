@@ -25,7 +25,7 @@ RtreeIndex* build(string datafile)
   
 }
 
-void query(RtreeIndex* myIndex, string queryfile)
+void query(RtreeIndex* myIndex, string queryfile, bool print)
 {
 	Timer querying;
 	querying.start();
@@ -38,16 +38,20 @@ void query(RtreeIndex* myIndex, string queryfile)
   {
 		vector<SpatialObject *> result;
 		myIndex->kNNQuery(&(*query), &result);
-#ifdef PRINTRESULT
-    for(vector<SpatialObject*>::iterator it = result.begin(); it != result.end(); ++it)
+    if(print)
     {
-      printf("%f ", (*it)->getCenter()[0]);
-    }
-    printf("\n");
-#endif
-	}
-	querying.stop();
-  cout << querying << endl;
+      for(vector<SpatialObject*>::iterator it = result.begin(); it != result.end(); ++it)
+      {
+        printf("%f ", (*it)->getCenter()[0]);
+      }
+      printf("\n");
+    } 	
+  }
+  if(!print)
+  {
+    cout << querying;
+  }
+
 }
 
 int main(int argc, const char* argv[])
@@ -56,12 +60,14 @@ int main(int argc, const char* argv[])
 	//string inputStem, queryfile;
 	string queryfile;
 	string datafile;
+  bool print;
 
 	po::options_description desc("Options");
 	desc.add_options()
 			("help", "produce help message")
 			("datafile", po::value<string>(&datafile), "name fordatafile")
-			("queryfile", po::value<string>(&queryfile), "file containing the queries");
+			("queryfile", po::value<string>(&queryfile), "file containing the queries")
+      ("print", po::value<bool>(&print), "if print result");
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -80,7 +86,7 @@ int main(int argc, const char* argv[])
 
 	/********************** QUERYING **********************/
 
-  query(myIndex, queryfile);
+  query(myIndex, queryfile, print);
 
   delete myIndex;
 }
