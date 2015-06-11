@@ -288,10 +288,10 @@ namespace FLAT
       << "\t"<<  FLAT_prefetchBuildingComparison << "\t" << FLAT_prefetchVertices << "\t" << FLAT_prefetchEdges << "\t"
       << FLAT_prefetchPredictionComparison << "\t" << FLAT_prefetchEntryCandidates << endl;
 
-    //		std::cout << accuracy << "\t" << error << "\t" << FLAT_TotalIO << "\t" << TotalHit << "\t" << TotalMiss
-    //				<< "\t" << FLAT_metaDataIOs << "\t" << FLAT_prefetchMetaHits
-    //				<< "\t" << FLAT_payLoadIOs << "\t" << FLAT_prefetchPayLoadHit   << "\t"
-    //				<< ResultPoints << endl;
+    //    std::cout << accuracy << "\t" << error << "\t" << FLAT_TotalIO << "\t" << TotalHit << "\t" << TotalMiss
+    //        << "\t" << FLAT_metaDataIOs << "\t" << FLAT_prefetchMetaHits
+    //        << "\t" << FLAT_payLoadIOs << "\t" << FLAT_prefetchPayLoadHit   << "\t"
+    //        << ResultPoints << endl;
   }
 
   void QueryStatistics::printRTREEheader()

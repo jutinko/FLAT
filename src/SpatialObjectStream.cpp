@@ -7,10 +7,10 @@ namespace FLAT
 
     SpatialObjectStream::SpatialObjectStream()
     {
-		objectType=NONE;
-		objectCount=0;
-		objectByteSize=0;
-		Box::infiniteBox(universe);
+    objectType=NONE;
+    objectCount=0;
+    objectByteSize=0;
+    Box::infiniteBox(universe);
     }
 
     SpatialObjectStream::~SpatialObjectStream()
