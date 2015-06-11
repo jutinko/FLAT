@@ -1,10 +1,10 @@
 #!/bin/bash
-RATIO="0.5"
+RATIO="0.01"
 
 
-for i in $(seq 1 10)
+for i in $(seq 1 1)
 do
-  n=$(($i*100000))
+  n=$(($i*70000000))
   k=$(($n/1000))
   #q=$(($k*$RATIO))
   q=$(echo "$k*$RATIO" | bc | cut -d . -f 1)

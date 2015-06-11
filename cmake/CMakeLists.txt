@@ -1,10 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 PROJECT(SpatialIndex)
 
-SET(MYLIB "FLAT")
+SET(MYLIB "FLAT1")
 OPTION(MAKE_EXECUTABLES "Make the executables." ON)
 OPTION(DEBUG "Whether to add debug flag to g++." ON)
-OPTION(LEAK "Whether to leak memory." OFF)
+OPTION(LEAK "Whether to leak memory." ON)
 OPTION(PRINTRESULT "Whether to leak memory." OFF)
 
 ############## SETTING DIRECTORY PATHS #################

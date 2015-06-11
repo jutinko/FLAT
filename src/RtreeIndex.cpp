@@ -28,9 +28,9 @@ namespace FLAT
         } else {
           query->stats.RTREE_nodeIOs++;
         }
-#ifdef LEAK
+//#ifdef LEAK
         delete shape;
-#endif
+//#endif
       }
 
       virtual bool doneVisiting() {
@@ -50,9 +50,9 @@ namespace FLAT
         data->unserialize((int8*)b);
 
         result->push_back(data);
-#ifdef LEAK
+//#ifdef LEAK
         delete b;
-#endif
+//#endif
       }
 
       virtual void visitUseless() {
